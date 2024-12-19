@@ -1,0 +1,5 @@
+NAME: ModelNet
+DATA_PATH: data/modelnet40-normal_numpy
+N_POINTS: 1024
+NUM_CATEGORY: 40
+USE_NORMALS: FALSE
