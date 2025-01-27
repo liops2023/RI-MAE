@@ -340,8 +340,7 @@ def test_net(args, config):
     if args.distributed:
         raise NotImplementedError()
      
-    # test(base_model, test_dataloader, args, config, logger=logger)
-    return test_tsne(base_model, test_dataloader, args, config, logger=logger)
+    test(base_model, test_dataloader, args, config, logger=logger)
     
 def test(base_model, test_dataloader, args, config, logger = None):
 
@@ -453,34 +452,3 @@ def test_vote(base_model, test_dataloader, epoch, val_writer, args, config, logg
     print_log('[TEST] acc = %.4f' % acc, logger=logger)
     
     return acc
-
-def test_tsne(base_model, test_dataloader, args, config, logger = None):
-
-    base_model.eval()  # set model to eval mode
-
-    test_features  = []
-    test_label = []
-    npoints = config.npoints
-
-    with torch.no_grad():
-        for idx, (taxonomy_ids, model_ids, data) in enumerate(test_dataloader):
-            points = data[0].cuda()
-            label = data[1].cuda()
-
-            points = misc.fps(points, npoints)
-
-            feature = base_model(points, get_feature=True)
-            target = label.view(-1)
-
-            test_features.append(feature.detach().cpu().numpy())
-            test_label.append(target.detach().cpu().numpy())
-
-
-        if args.distributed:
-            test_features = dist_utils.gather_tensor(test_features, args)
-            test_label = dist_utils.gather_tensor(test_label, args)
-
-        test_features = np.concatenate(test_features)
-        test_label = np.concatenate(test_label)
-
-        return test_features, test_label
