@@ -31,6 +31,42 @@ pip install "git+https://github.com/erikwijmans/Pointnet2_PyTorch.git#egg=pointn
 pip install --upgrade https://github.com/unlimblue/KNN_CUDA/releases/download/0.2/KNN_CUDA-0.2-py3-none-any.whl
 ```
 
+### PyTorch3D Installation (Optional)
+If you want to use the mesh ray casting feature for point cloud generation, you need to install PyTorch3D. See the [official installation guide](https://github.com/facebookresearch/pytorch3d/blob/main/INSTALL.md) for detailed instructions.
+
+**Option 1: Using our Conda environment file (Recommended)**
+```
+# Create and activate conda environment with all dependencies
+conda env create -f environment.yml
+conda activate rimae
+
+# Install custom extensions
+cd ./extensions/chamfer_dist
+python setup.py install --user
+cd ../emd
+python setup.py install --user
+```
+
+**Option 2: Manual installation of PyTorch3D dependencies**
+```
+# Install dependencies first
+conda install -c pytorch pytorch=1.10.1 torchvision cudatoolkit=11.3
+conda install -c iopath iopath
+conda install -c bottler nvidiacub
+conda install -c fvcore -c conda-forge fvcore
+
+# Then install PyTorch3D 
+conda install -c pytorch3d pytorch3d
+
+# For older CUDA versions (<11.7), the CUB library is required
+# It's already included via nvidiacub in our environment.yml
+```
+
+**Note**: If you encounter issues with PyTorch3D installation, you might need to install from source:
+```
+pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"
+```
+
 ## 2. Datasets
 
 We use ShapeNet, ScanObjectNN, ModelNet40 and ShapeNetPart in this work. See [DATASET.md](./DATASET.md) for details.

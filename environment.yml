@@ -1,0 +1,47 @@
+name: rimae
+channels:
+  - pytorch
+  - pytorch3d
+  - bottler
+  - conda-forge
+  - iopath
+  - fvcore
+  - defaults
+dependencies:
+  - python=3.8
+  - pip=22.0.4
+  - pytorch=1.10.1
+  - torchvision=0.11.2
+  - cudatoolkit=11.3.1
+  - pytorch3d
+  - nvidiacub
+  - iopath
+  - fvcore
+  - pyyaml
+  - scikit-learn
+  - scipy
+  - pandas
+  - matplotlib
+  - h5py
+  - tqdm
+  - einops
+  - joblib
+  - tensorboard
+  - scikit-image
+  - jupyterlab
+  - black
+  - flake8
+  - pip:
+    - pointnet2_ops_lib
+    - timm
+    - easydict
+    - termcolor
+    - open3d
+    - usort
+    - "git+https://github.com/erikwijmans/Pointnet2_PyTorch.git#egg=pointnet2_ops&subdirectory=pointnet2_ops_lib"
+    - "https://github.com/unlimblue/KNN_CUDA/releases/download/0.2/KNN_CUDA-0.2-py3-none-any.whl"
+    - chamfer-distance
+    - emd
+    - imageio
+    - plotly
+    - opencv-python 
