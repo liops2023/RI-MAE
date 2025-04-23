@@ -40,6 +40,19 @@ model : {
   # cls_dim is not typically used directly in MAE pretraining loss
 }
 
+# PyTorch3D ray casting 관련 설정
+# Mesh 파일이 데이터셋에 포함된 경우 ray casting에 사용
+ray_casting: {
+  enabled: True,  # PyTorch3D ray casting 활성화 여부
+  min_fov: 30,    # 최소 Field of View (각도)
+  max_fov: 60,    # 최대 Field of View (각도)
+  min_resolution: 64,  # 최소 렌더링 해상도
+  max_resolution: 128, # 최대 렌더링 해상도
+  n_cameras: 1,   # 카메라 수 (1 = 하나의 랜덤 관점만 사용)
+  min_depth: 0.1, # 최소 depth 값
+  max_depth: 10.0 # 최대 depth 값
+}
+
 npoints: 2048 # Number of points used during training transforms/forward pass
 total_bs : 32 # Adjust batch size based on GPU memory
 step_per_update : 1

@@ -1,0 +1,63 @@
+# Finetuning 시 사용할 Pretrained 모델 경로 (필수 수정!)
+pretrain_ckpt: '/path/to/your/pretrained/abc_pretrain/ckpt-best.pth' # 실제 경로로 변경해주세요
+
+optimizer : {
+  type: AdamW,
+  kwargs: {
+  lr : 0.0001,  # Finetuning 시 learning rate 낮춤
+  weight_decay : 0.05
+}}
+
+scheduler: {
+  type: CosLR,
+  kwargs: {
+    epochs: 100, # Finetuning epoch 수
+    initial_epochs : 5
+}}
+
+dataset : {
+  train : { _base_: ../dataset_configs/abc_dataset.yaml,
+            others: {subset: 'train', rot_aug: True}},
+  val : { _base_: ../dataset_configs/abc_dataset.yaml,
+          others: {subset: 'val', rot_aug: False}}, # 또는 'test'
+  # Retrieval runner는 extra_train을 사용하지 않습니다.
+}
+
+model : {
+  NAME: RITransformer_MAE, # 같은 모델 구조 사용 (Pretrained 가중치 로드)
+  trans_dim: 384,
+  depth: 12,
+  drop_path_rate: 0.1,
+  num_heads: 6,
+  group_size: 32,
+  num_group: 64,
+  encoder_dims: 256,
+  use_dropout: False,
+  # Finetuning task 정의
+  tasks: ['retrieval'], # Retrieval task 만 사용 (필요시 ['classification', 'retrieval'] 등 추가 가능)
+  cls_dim: 40, # !!! 중요: ABC dataset의 실제 클래스 수로 변경해야 합니다 !!!
+  # 다른 task 관련 파라미터 (e.g., seg_num_classes)는 불필요
+}
+
+# PyTorch3D ray casting 관련 설정
+# Mesh 파일이 데이터셋에 포함된 경우 ray casting에 사용
+ray_casting: {
+  enabled: True,  # PyTorch3D ray casting 활성화 여부
+  min_fov: 30,    # 최소 Field of View (각도)
+  max_fov: 60,    # 최대 Field of View (각도)
+  min_resolution: 64,  # 최소 렌더링 해상도
+  max_resolution: 128, # 최대 렌더링 해상도
+  n_cameras: 1,   # 카메라 수 (1 = 하나의 랜덤 관점만 사용)
+  min_depth: 0.1, # 최소 depth 값
+  max_depth: 10.0 # 최대 depth 값
+}
+
+npoints: 8192 # abc_dataset.yaml 에서 가져옴
+total_bs : 16 # 배치 크기 조절
+step_per_update : 1
+max_epoch : 100 # scheduler와 일치
+grad_norm_clip : 10
+
+# runner_RIMAE_finetune.py 에서 사용하는 설정들 추가
+val_freq: 5 # 5 에폭마다 validation 수행
+consider_metric: 'retrieval_recall@1' # 예시 (주요 평가 지표) 

@@ -1,0 +1,58 @@
+optimizer : {
+  type: AdamW,
+  kwargs: {
+  lr : 0.0005,
+  weight_decay : 0.05
+}}
+
+scheduler: {
+  type: CosLR,
+  kwargs: {
+    epochs: 300,  # Pretraining은 더 길게
+    initial_epochs : 10
+}}
+
+dataset : {
+  train : { _base_: ../dataset_configs/abc_dataset.yaml,
+            others: {subset: 'train', rot_aug: True}}, # rot_aug 추가
+  val : { _base_: ../dataset_configs/abc_dataset.yaml,
+          others: {subset: 'val', rot_aug: False}}, # validation에는 augmentation X
+  # runner_RIMAE_pretrain.py의 validate 함수는 extra_train_dataloader를 사용합니다.
+  # SVM 평가를 위해 train set의 일부를 사용합니다.
+  extra_train : { _base_: ../dataset_configs/abc_dataset.yaml,
+                  others: {subset: 'train', rot_aug: False}} # SVM 평가용 train set
+}
+
+model : {
+  NAME: RITransformer_MAE,  # MAE pretraining 모델
+  trans_dim: 384,
+  depth: 12,
+  drop_path_rate: 0.1,
+  num_heads: 6,
+  group_size: 32,
+  num_group: 64,
+  encoder_dims: 256,
+  # 아래는 MAE 관련 파라미터 예시입니다. 실제 모델 구현에 맞게 조정 필요
+  mask_ratio: 0.75,
+  decoder_depth: 4,
+  decoder_dim: 128,
+  decoder_num_heads: 4,
+  use_dropout: False,
+  # cls_dim 불필요 (Pretraining 시 feature 추출만)
+}
+
+npoints: 8192 # abc_dataset.yaml 에서 가져옴
+total_bs : 32 # 배치 크기 조절
+step_per_update : 1
+max_epoch : 300 # scheduler와 일치
+grad_norm_clip : 10
+
+clip_gradients: True # pretrain runner 참고
+clip_grad: 1.0 # pretrain runner 참고
+
+# runner_RIMAE_pretrain.py 에서 사용하는 설정들 추가
+use_cutmix: False # 예시 (필요시 True)
+
+# Validation 설정 (runner_RIMAE_pretrain.py의 validate 함수는 SVM 평가)
+val_freq: 10 # 10 에폭마다 validation 수행
+# `consider_metric`은 pretrain runner에서 사용하지 않음 (Acc_Metric 클래스 직접 사용) 
