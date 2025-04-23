@@ -1,0 +1,46 @@
+# Configuration for Retrieval Fine-tuning on ABC Dataset
+
+optimizer : {
+  type: AdamW,
+  kwargs: {
+  lr : 0.0001, # Typically use a smaller LR for fine-tuning
+  weight_decay : 0.05
+}}
+
+scheduler: {
+  type: CosLR,
+  kwargs: {
+    epochs: 100, # Adjust epochs as needed for fine-tuning
+    initial_epochs : 5
+}}
+
+# Note: ABCDataset.py needs to handle the 'subset' parameter correctly
+# Ensure ROOT_DIR in abc_dataset.yaml points to the correct base path
+dataset : {
+  train : { _base_: cfgs/dataset_configs/abc_dataset.yaml,
+            others: {subset: 'train', N_POINTS: 1024, rot_aug: True}}, # Use 1024 points for fine-tuning
+  val : { _base_: cfgs/dataset_configs/abc_dataset.yaml,
+            others: {subset: 'test', N_POINTS: 1024, rot_aug: False}}}
+
+model : {
+  NAME: RITransformer_MAE, # Or the specific fine-tuning model name
+  trans_dim: 384,
+  depth: 12,
+  drop_path_rate: 0.1,
+  num_heads: 6,
+  group_size: 32,
+  num_group: 64,
+  encoder_dims: 256,
+  use_dropout: False,
+  tasks: ['retrieval'] # Specify the task for the fine-tuning runner
+  # The model's forward function must return a dict with 'retrieval' key containing embeddings
+  # cls_dim is not needed if only doing retrieval
+}
+
+npoints: 1024 # Number of points used during training
+total_bs : 16 # Adjust batch size
+step_per_update : 1
+max_epoch : 100 # Adjust epochs
+grad_norm_clip : 10
+
+consider_metric: retrieval_recall@1 # Metric to track for saving best checkpoint 
