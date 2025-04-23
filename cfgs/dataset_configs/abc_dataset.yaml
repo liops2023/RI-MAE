@@ -1,5 +1,5 @@
 NAME: ABCDataset
-ROOT_DIR: /home/xxx/data/abc
+ROOT_DIR: /home/sy/data/abc
 N_POINTS: 8192
 subset: train
 rot_aug: True

@@ -1,4 +1,3 @@
-README.md
 setup.py
 cuda/emd.cpp
 cuda/emd_kernel.cu

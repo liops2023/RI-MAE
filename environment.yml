@@ -1,19 +1,23 @@
 name: rimae
 channels:
   - pytorch
+  - nvidia
   - pytorch3d
   - bottler
-  - conda-forge
   - iopath
   - fvcore
+  - conda-forge
   - defaults
 dependencies:
-  - python=3.8
-  - pip=22.0.4
-  - pytorch=1.10.1
-  - torchvision=0.11.2
-  - cudatoolkit=11.3.1
-  - pytorch3d
+  # Python & core
+  - python=3.10
+  - pip=23.3
+  # PyTorch 2.1 + CUDA 12.1
+  - pytorch=2.1.1
+  - torchvision=0.16.1
+  - pytorch-cuda=12.1  # meta‑pkg from nvidia channel
+  # Core libs
+  - pytorch3d  # CUDA 12 사전 빌드가 없을 경우 README 참고
   - nvidiacub
   - iopath
   - fvcore
@@ -38,7 +42,7 @@ dependencies:
     - termcolor
     - open3d
     - usort
-    - "git+https://github.com/erikwijmans/Pointnet2_PyTorch.git#egg=pointnet2_ops&subdirectory=pointnet2_ops_lib"
+    - "git+https://github.com/LucasColas/Pointnet2_PyTorch.git#egg=pointnet2_ops&subdirectory=pointnet2_ops_lib"
     - "https://github.com/unlimblue/KNN_CUDA/releases/download/0.2/KNN_CUDA-0.2-py3-none-any.whl"
     - chamfer-distance
     - emd

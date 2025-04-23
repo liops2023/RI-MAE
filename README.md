@@ -26,7 +26,7 @@ python setup.py install --user
 cd ./extensions/emd
 python setup.py install --user
 # PointNet++
-pip install "git+https://github.com/erikwijmans/Pointnet2_PyTorch.git#egg=pointnet2_ops&subdirectory=pointnet2_ops_lib"
+pip install "git+https://github.com/LucasColas/Pointnet2_PyTorch.git#egg=pointnet2_ops&subdirectory=pointnet2_ops_lib"
 # GPU kNN
 pip install --upgrade https://github.com/unlimblue/KNN_CUDA/releases/download/0.2/KNN_CUDA-0.2-py3-none-any.whl
 ```
@@ -36,7 +36,7 @@ If you want to use the mesh ray casting feature for point cloud generation, you 
 
 **Option 1: Using our Conda environment file (Recommended)**
 ```
-# Create and activate conda environment with all dependencies
+# Create and activate conda environment with CUDA 12.1 support
 conda env create -f environment.yml
 conda activate rimae
 
@@ -47,24 +47,22 @@ cd ../emd
 python setup.py install --user
 ```
 
-**Option 2: Manual installation of PyTorch3D dependencies**
+**Option 2: Manual installation of PyTorch3D dependencies (CUDA 12.1)**
 ```
-# Install dependencies first
-conda install -c pytorch pytorch=1.10.1 torchvision cudatoolkit=11.3
+# Install PyTorch 2.1 with CUDA 12.1
+conda install -c pytorch -c nvidia pytorch=2.1.1 torchvision=0.16.1 pytorch-cuda=12.1
+# Core deps
 conda install -c iopath iopath
 conda install -c bottler nvidiacub
 conda install -c fvcore -c conda-forge fvcore
 
-# Then install PyTorch3D 
-conda install -c pytorch3d pytorch3d
-
-# For older CUDA versions (<11.7), the CUB library is required
-# It's already included via nvidiacub in our environment.yml
+# Then install PyTorch3D (nightly wheels already support CUDA 12.1)
+conda install -c pytorch3d-nightly pytorch3d
 ```
 
-**Note**: If you encounter issues with PyTorch3D installation, you might need to install from source:
+If the official PyTorch3D build for CUDA 12.1 is not yet available, install from source:
 ```
-pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"
+pip install "git+https://github.com/facebookresearch/pytorch3d.git@main"
 ```
 
 ## 2. Datasets

@@ -36,6 +36,15 @@ model : {
   # Finetuning task 정의
   tasks: ['retrieval'], # Retrieval task 만 사용 (필요시 ['classification', 'retrieval'] 등 추가 가능)
   cls_dim: 40, # !!! 중요: ABC dataset의 실제 클래스 수로 변경해야 합니다 !!!
+  # Retrieval 세부 설정 (PartialFC 및 ProxyAnchorLoss)
+  retrieval_config: {
+      embedding_size: 128,       # 임베딩 차원 (모델 출력 차원)
+      num_classes: 40,           # ABC 데이터셋 클래스 수에 맞춰 수정
+      use_partial_fc: True,      # 큰 클래스 수일 경우 Partial FC 사용 권장
+      partial_fc_sample_rate: 1.0, # 1.0이면 모든 클래스를 사용, <1.0이면 일부 샘플링
+      loss_margin: 0.1,          # ProxyAnchorLoss margin
+      loss_alpha: 32             # ProxyAnchorLoss alpha
+  },
   # 다른 task 관련 파라미터 (e.g., seg_num_classes)는 불필요
 }
 
